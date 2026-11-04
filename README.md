@@ -4,6 +4,8 @@
 
 Built with Python, SQL, scikit-learn and Streamlit.
 
+🔗 **Live App:** [smart-invoice-auditor.streamlit.app](https://smart-invoice-auditor.streamlit.app/)
+
 ---
 
 ## 📌 Problem Statement
@@ -25,7 +27,12 @@ This project builds two machine learning models and a web app:
 
 ## 📸 App Preview
 
-_Add screenshots of the Freight Cost Prediction page and the Invoice Flag page here._
+_Add screenshots here (for example `images/freight_page.png` and `images/flag_page.png`):_
+
+```
+![Freight Cost Prediction](images/freight_page.png)
+![Invoice Risk Flagging](images/flag_page.png)
+```
 
 ---
 
@@ -38,7 +45,7 @@ Data is stored in a SQLite database (`inventory.db`) with two main tables:
 | `vendor_invoice` | What the vendor billed: quantity, dollars, freight, invoice and payment dates |
 | `purchases` | What was ordered and received: brands, quantity, dollars, receiving date |
 
-> ⚠️ The database file (about 400 MB) is not included in this repository because of GitHub's file size limit. Place your own copy at `data/inventory.db` to retrain the models.
+> ⚠️ The database file (about 400 MB) is not included in this repository because of GitHub's file size limit. Place your own copy at `data/inventory.db` to retrain the models. The deployed app only needs the saved models, not the database.
 
 ---
 
@@ -57,7 +64,7 @@ Data is stored in a SQLite database (`inventory.db`) with two main tables:
   - Average receiving delay is more than **10 days**
 - Used **T-tests** for feature selection
 - Compared **Logistic Regression, Decision Tree and Random Forest**
-- Tuned the Random Forest with **GridSearchCV**
+- Tuned the Random Forest with **GridSearchCV** (the gain was small, so the deployed model is the standard Random Forest trained on five features)
 
 ---
 
@@ -84,6 +91,7 @@ When the flagger marks an invoice, it is right about **93%** of the time, and it
 | Machine learning | scikit-learn |
 | Model saving | Joblib |
 | Web app | Streamlit |
+| Deployment | Streamlit Community Cloud |
 | Version control | Git, GitHub |
 
 ---
@@ -93,7 +101,9 @@ When the flagger marks an invoice, it is right about **93%** of the time, and it
 ```
 Smart-Invoice-Auditor/
 ├── app.py                          # Streamlit app
+├── requirements.txt
 ├── inference/
+│   ├── __init__.py
 │   ├── predict_freight.py          # Freight prediction module
 │   └── predict_invoice_flag.py     # Invoice flag prediction module
 ├── freight_cost_predcition/
@@ -102,13 +112,12 @@ Smart-Invoice-Auditor/
 │   ├── train.py                    # Train pipeline, saves best model
 │   └── models/                     # Saved .pkl models
 ├── notebooks/                      # Exploration and experiments
-├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## ▶️ How to Run
+## ▶️ How to Run Locally
 
 **1. Clone the repository**
 ```bash
@@ -141,13 +150,15 @@ python train.py
 - The flag label is **rule-based** ($5 mismatch, 10-day delay), not taken from real audit history. The model learns to automate this rule rather than discover new fraud patterns.
 - The flagging model cannot see average receiving delay, so it cannot catch invoices flagged only for late delivery, which limits recall.
 - The freight model uses a single feature (invoice dollars), so it is less accurate for very large or unusual invoices.
+- The app scores one invoice at a time from manual input; in production, the inference modules would be called automatically on new invoices.
 
 ## 🚀 Future Improvements
 
+- Batch upload of invoices (CSV) with downloadable results
 - Use real audit or approval history as the label
 - Add more features such as vendor, brand and seasonality
 - Add explainability (for example SHAP) to show why an invoice was flagged
-- Deploy the app online with Streamlit Community Cloud
+- Connect the models to the invoice database for automatic scoring
 
 ---
 
