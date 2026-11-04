@@ -25,6 +25,8 @@ st.markdown("""
 
 This internal analytics portal leverages machine learning to
 - **Forecast freight costs accurately**
+- **Detect risky or abnormal vendor invoices**
+- **Reduce financial leakage and manual workload**
 """)
 st.divider() 
 # --------------------------------------------------
